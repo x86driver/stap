@@ -1,0 +1,16 @@
+#! /usr/bin/env stap
+
+global malloc_size;
+
+probe kernel.function("__kmalloc@mm/slub.c:2718") {
+//	malloc_size[$size] <<< 1
+	malloc_size <<< $size
+}
+
+probe end {
+	printf("\n")
+//	foreach (i+ in malloc_size) {
+		print(@hist_log(malloc_size))
+//	}
+}
+
